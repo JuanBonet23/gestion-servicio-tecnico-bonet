@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bonet | Gestión de Servicio Técnico</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <small>Bonet Ingeniería</small>
+        <h1>Gestión de Servicio Técnico</h1>
+        <p>Tickets, informes técnicos y asistente IA integrado.</p>
+      </div>
+
+      <div class="menu-card">
+        <h3>Panel general</h3>
+        <div class="stat"><span>Total tickets</span><b id="mTotal">0</b></div>
+        <div class="stat"><span>Abiertos</span><b id="mOpen">0</b></div>
+        <div class="stat"><span>En proceso</span><b id="mProgress">0</b></div>
+        <div class="stat"><span>Cerrados</span><b id="mClosed">0</b></div>
+      </div>
+
+      <div class="menu-card">
+        <h3>Acciones rápidas</h3>
+        <button class="btn btn-primary full-btn" onclick="openModal()">+ Nuevo ticket</button>
+        <button class="btn btn-light full-btn" onclick="exportCurrentReport()">Exportar informe</button>
+      </div>
+
+      <div class="menu-card">
+        <h3>Guía rápida</h3>
+        <p>
+          Esta versión funciona en GitHub Pages con archivos estáticos.
+          Guarda datos en el navegador y genera prompts listos para ChatGPT.
+        </p>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <h2>Software de gestión de actividades de servicio técnico</h2>
+        <p>
+          Registra solicitudes, genera tickets de atención, documenta actividades de campo,
+          construye informes técnicos y prepara prompts integrados con ChatGPT para diagnósticos,
+          recomendaciones y cierre técnico.
+        </p>
+      </section>
+
+      <section class="grid-top">
+        <div class="card">
+          <div class="card-header">
+            <h3>Tickets de atención</h3>
+          </div>
+          <div class="card-body">
+            <div class="search-row">
+              <input id="searchInput" placeholder="Buscar por ticket, cliente, equipo o técnico" oninput="renderTickets()" />
+              <button class="btn btn-outline" onclick="seedDemoData()">Cargar demo</button>
+            </div>
+            <div class="ticket-list" id="ticketList"></div>
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span>Total tickets</span><b id="kpiTotal">0</b></div>
+          <div class="metric"><span>Abiertos</span><b id="kpiOpen">0</b></div>
+          <div class="metric"><span>En proceso</span><b id="kpiProgress">0</b></div>
+          <div class="metric"><span>Cerrados</span><b id="kpiClosed">0</b></div>
+        </div>
+      </section>
+
+      <section class="card workspace">
+        <div class="card-body">
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('detalle', this)">Detalle del ticket</button>
+            <button class="tab" onclick="switchTab('informe', this)">Informe técnico</button>
+            <button class="tab" onclick="switchTab('ia', this)">Integración ChatGPT</button>
+          </div>
+
+          <div class="tab-panel active" id="tab-detalle">
+            <div id="ticketDetail"></div>
+          </div>
+
+          <div class="tab-panel" id="tab-informe">
+            <div class="form-grid">
+              <textarea id="rAntecedentes" class="full" placeholder="Antecedentes"></textarea>
+              <textarea id="rActividades" class="full" placeholder="Actividades ejecutadas"></textarea>
+              <textarea id="rHallazgos" class="full" placeholder="Hallazgos"></textarea>
+              <textarea id="rDiagnostico" class="full" placeholder="Diagnóstico"></textarea>
+              <textarea id="rRecomendaciones" class="full" placeholder="Recomendaciones"></textarea>
+              <textarea id="rEstadoFinal" class="full" placeholder="Estado final"></textarea>
+            </div>
+            <div class="toolbar">
+              <button class="btn btn-primary" onclick="saveReportToTicket()">Actualizar ticket</button>
+              <button class="btn btn-outline" onclick="loadReportFromTicket()">Cargar datos del ticket</button>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-ia">
+            <div class="form-grid">
+              <div>
+                <label for="templateSelect">Plantilla IA</label>
+                <select id="templateSelect">
+                  <option value="diagnostico">Diagnóstico técnico</option>
+                  <option value="informe">Informe técnico de visita</option>
+                  <option value="recomendaciones">Recomendaciones al cliente</option>
+                </select>
+              </div>
+              <div>
+                <label>&nbsp;</label>
+                <button class="btn btn-primary full-btn" onclick="generatePrompt()">Generar prompt integrado</button>
+              </div>
+            </div>
+
+            <div class="section-title">Prompt generado</div>
+            <div class="prompt-box" id="promptBox"></div>
+
+            <div class="note">
+              Para una versión productiva, conecta esta app a una base de datos y a la API de OpenAI para generar informes automáticos.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="ticketModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Crear nuevo ticket</h3>
+        <button class="btn btn-outline" onclick="closeModal()">Cerrar</button>
+      </div>
+
+      <div class="form-grid">
+        <input id="nCliente" placeholder="Cliente" />
+        <input id="nContacto" placeholder="Contacto" />
+        <input id="nEquipo" placeholder="Equipo / Sistema" />
+        <input id="nUbicacion" placeholder="Ubicación" />
+        <input id="nTecnico" placeholder="Técnico asignado" />
+        <select id="nPrioridad">
+          <option>Alta</option>
+          <option selected>Media</option>
+          <option>Baja</option>
+        </select>
+        <select id="nEstado">
+          <option selected>Abierto</option>
+          <option>En proceso</option>
+          <option>Cerrado</option>
+        </select>
+        <input id="nFecha" type="date" />
+        <textarea id="nDescripcion" class="full" placeholder="Descripción de la novedad o solicitud"></textarea>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-primary" onclick="createTicket()">Guardar ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
