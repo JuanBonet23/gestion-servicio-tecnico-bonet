@@ -24,16 +24,24 @@
       </div>
 
       <div class="menu-card">
-        <h3>Acciones rápidas</h3>
-        <button class="btn btn-primary full-btn" onclick="openModal()">+ Nuevo ticket</button>
-        <button class="btn btn-light full-btn" onclick="exportCurrentReport()">Exportar informe</button>
+        <h3>Autenticación</h3>
+        <p id="authStatus">No autenticado</p>
+        <button class="btn btn-primary full-btn" id="btnLogin">Ingresar con Google</button>
+        <button class="btn btn-outline full-btn" id="btnLogout">Cerrar sesión</button>
       </div>
 
       <div class="menu-card">
-        <h3>Guía rápida</h3>
+        <h3>Acciones rápidas</h3>
+        <button class="btn btn-primary full-btn" id="btnNewTicket">+ Nuevo ticket</button>
+        <button class="btn btn-light full-btn" id="btnExport">Exportar informe</button>
+        <button class="btn btn-outline full-btn" id="btnSeed">Cargar demo en Firestore</button>
+      </div>
+
+      <div class="menu-card">
+        <h3>Modo de operación</h3>
         <p>
-          Esta versión funciona en GitHub Pages con archivos estáticos.
-          Guarda datos en el navegador y genera prompts listos para ChatGPT.
+          Esta versión guarda los tickets en Cloud Firestore. Debes completar
+          <b>firebase-config.js</b> con tus credenciales del proyecto.
         </p>
       </div>
     </aside>
@@ -55,8 +63,8 @@
           </div>
           <div class="card-body">
             <div class="search-row">
-              <input id="searchInput" placeholder="Buscar por ticket, cliente, equipo o técnico" oninput="renderTickets()" />
-              <button class="btn btn-outline" onclick="seedDemoData()">Cargar demo</button>
+              <input id="searchInput" placeholder="Buscar por ticket, cliente, equipo o técnico" />
+              <button class="btn btn-outline" id="btnRefresh">Actualizar</button>
             </div>
             <div class="ticket-list" id="ticketList"></div>
           </div>
@@ -73,9 +81,9 @@
       <section class="card workspace">
         <div class="card-body">
           <div class="tabs">
-            <button class="tab active" onclick="switchTab('detalle', this)">Detalle del ticket</button>
-            <button class="tab" onclick="switchTab('informe', this)">Informe técnico</button>
-            <button class="tab" onclick="switchTab('ia', this)">Integración ChatGPT</button>
+            <button class="tab active" data-tab="detalle">Detalle del ticket</button>
+            <button class="tab" data-tab="informe">Informe técnico</button>
+            <button class="tab" data-tab="ia">Integración ChatGPT</button>
           </div>
 
           <div class="tab-panel active" id="tab-detalle">
@@ -92,8 +100,8 @@
               <textarea id="rEstadoFinal" class="full" placeholder="Estado final"></textarea>
             </div>
             <div class="toolbar">
-              <button class="btn btn-primary" onclick="saveReportToTicket()">Actualizar ticket</button>
-              <button class="btn btn-outline" onclick="loadReportFromTicket()">Cargar datos del ticket</button>
+              <button class="btn btn-primary" id="btnSaveReport">Actualizar ticket</button>
+              <button class="btn btn-outline" id="btnLoadReport">Cargar datos del ticket</button>
             </div>
           </div>
 
@@ -109,7 +117,7 @@
               </div>
               <div>
                 <label>&nbsp;</label>
-                <button class="btn btn-primary full-btn" onclick="generatePrompt()">Generar prompt integrado</button>
+                <button class="btn btn-primary full-btn" id="btnGeneratePrompt">Generar prompt integrado</button>
               </div>
             </div>
 
@@ -117,7 +125,8 @@
             <div class="prompt-box" id="promptBox"></div>
 
             <div class="note">
-              Para una versión productiva, conecta esta app a una base de datos y a la API de OpenAI para generar informes automáticos.
+              La integración real con OpenAI debe hacerse desde un backend seguro
+              como Cloud Functions, no directamente desde el navegador.
             </div>
           </div>
         </div>
@@ -129,7 +138,7 @@
     <div class="modal-box">
       <div class="modal-head">
         <h3>Crear nuevo ticket</h3>
-        <button class="btn btn-outline" onclick="closeModal()">Cerrar</button>
+        <button class="btn btn-outline" id="btnCloseModal">Cerrar</button>
       </div>
 
       <div class="form-grid">
@@ -153,11 +162,11 @@
       </div>
 
       <div class="toolbar">
-        <button class="btn btn-primary" onclick="createTicket()">Guardar ticket</button>
+        <button class="btn btn-primary" id="btnCreateTicket">Guardar ticket</button>
       </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

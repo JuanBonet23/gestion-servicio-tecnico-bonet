@@ -1,49 +1,53 @@
-# Gestión de Servicio Técnico - Bonet
+# Gestión de Servicio Técnico - Bonet (Firestore)
 
-Aplicación web estática en HTML, CSS y JavaScript para:
-
-- Crear tickets de atención
-- Gestionar actividades de servicio técnico
-- Elaborar informes técnicos
-- Generar prompts integrados con ChatGPT
-- Publicar fácilmente en GitHub Pages
+Versión conectada a **Firebase Authentication + Cloud Firestore**.
 
 ## Archivos
 
-- `index.html`: estructura principal
-- `style.css`: estilos
-- `app.js`: lógica del sistema
-- `README.md`: guía de despliegue
+- `index.html`
+- `style.css`
+- `app.js`
+- `firebase-config.js`
+- `README.md`
 
-## Funcionalidades incluidas
+## Qué hace esta versión
 
-- Panel de tickets
-- Métricas rápidas
-- Formulario de creación de tickets
-- Módulo de informe técnico
-- Generación de prompt IA
-- Persistencia local con `localStorage`
-- Exportación de informe en `.txt`
+- Login con Google
+- Lectura de tickets desde Firestore
+- Creación de tickets en Firestore
+- Actualización de informe técnico
+- Generación de prompt para ChatGPT
+- Exportación de informe `.txt`
 
-## Cómo publicar en GitHub Pages
+## Configuración rápida
 
-1. Crea un repositorio nuevo en GitHub.
-2. Sube estos archivos a la raíz del repositorio.
-3. Ve a **Settings**.
-4. Entra a **Pages**.
-5. En **Build and deployment**, selecciona:
-   - **Source**: Deploy from a branch
-   - **Branch**: `main`
-   - **Folder**: `/root`
-6. Guarda.
-7. Espera unos segundos y GitHub te dará la URL pública.
+1. Crea un proyecto en Firebase.
+2. Agrega una app web.
+3. Habilita Authentication > Google.
+4. Crea Firestore Database.
+5. Copia tus credenciales en `firebase-config.js`.
+6. Sube estos archivos a GitHub Pages.
 
-## Próxima versión recomendada
+## Colección usada
 
-- Base de datos real
-- Login de usuarios
-- Roles: administrador, coordinador, técnico
-- Adjuntar fotos y evidencias
-- Exportación PDF
-- Integración real con OpenAI API
-- Historial por cliente y por equipo
+`tickets`
+
+## Reglas mínimas sugeridas para pruebas
+
+```txt
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /tickets/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+## Siguiente mejora
+
+- Storage para fotos
+- PDF real
+- Cloud Functions para OpenAI
+- Dashboard por técnico y cliente
